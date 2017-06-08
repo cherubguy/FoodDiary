@@ -1,5 +1,5 @@
 import sqlite3
-conn = sqlite3.connect('Sqlite3 Databases')
+conn = sqlite3.connect('/Users/Michael/PycharmProjects/Databases/FoodDiaryDB.db')
 c = conn.cursor
 
 c.execute('CREATE TABLE food(food_name VARCHAR(20), calories NUMBER(5), protein NUMBER(5), fat NUMBER(5), quantity NUMBER(5))')
@@ -61,12 +61,15 @@ class Meal(object):
         self.total_protein = total_protein
         self.total_fat = total_fat
 
+        print('The total calories in this meal is', self.total_calories, ', the total protein in this meal is', self.total_protein,
+              ', the total fat in this meal is', self.total_fat)
+
     def add_to_meal_table(self, ingredients):
         ', '.join(ingredients)
         c.execute('INSERT INTO meal(meal_name, ingredients, time_to_make(self.food_name, self.ingredients, self.time_to_make))')
 
-        conn.commit
-        conn.close
+        conn.commit()
+        conn.close()
 
 
 def create_ingredients():
@@ -101,21 +104,22 @@ def create_meal(ingredients):
     else:
         print('There is already an entry with that name.')
         meal_dict[meal_name].add_to_meal_table()
-    return meal_dict[meal_name] # Returns a single meal in a dict, with the attribute 'ingredients'
 
 
 def query_tables():
     type_choice = input('Would you like to query a meal or a food?')
     if type_choice == 'meal':
         specific_meal_choice = input('Which meal would you like to query?')
-        c.execute(SELECT * FROM meal WHERE meal_name = specific_meal_choice)
+        c.execute('SELECT * FROM meal WHERE meal_name = ?', specific_meal_choice)
         all_rows = c.fetchall()
         print(all_rows)
+        conn.close()
     elif type_choice == 'food':
         specific_food_choice = input('Which food would you like to query?')
-        c.execute(SELECT * FROM food WHERE food_name = specific_food_choice)
+        c.execute('SELECT * FROM food WHERE food_name = ?', specific_food_choice)
         all_rows = c.fetchall()
         print(all_rows)
+        conn.close()
 
 
 def check_close(close):
@@ -128,11 +132,12 @@ def check_close(close):
         print('That is not an available option, please re-enter')
         check_close()
 
+
 def main_loop():
     close = False
-    while close = False:
+    while close == False:
         ingredients = create_ingredients() # Creates a list of ingredients
-        meal_dict[meal_name] = create_meal(ingredients) # Creates a single meal
+        create_meal(ingredients) # Creates a single meal
         query_choice = input('Would you like to query a table?')
         if query_choice == 'yes':
             query_tables()
